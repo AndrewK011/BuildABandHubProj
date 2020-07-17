@@ -28,9 +28,7 @@ namespace BuildABandHub.Data
             );
         }
         public DbSet<BuildABandHub.Models.Musician> Musicians { get; set; }
-        public DbSet<BuildABandHub.Models.Musician> Bands { get; set; }
-        public DbSet<BuildABandHub.Models.Musician> MusicEnthusiasts { get; set; }
-        public DbSet<BuildABandHub.Models.Band> Band { get; set; }
-        public DbSet<BuildABandHub.Models.MusicEnthusiast> MusicEnthusiast { get; set; }
+        public DbSet<BuildABandHub.Models.Band> Bands { get; set; }
+        public DbSet<BuildABandHub.Models.MusicEnthusiast> MusicEnthusiasts { get; set; }
     }
 }

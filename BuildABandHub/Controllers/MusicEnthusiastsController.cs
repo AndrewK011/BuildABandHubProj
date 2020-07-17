@@ -22,7 +22,7 @@ namespace BuildABandHub.Controllers
         // GET: MusicEnthusiasts
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.MusicEnthusiast.Include(m => m.Genre).Include(m => m.IdentityUser);
+            var applicationDbContext = _context.MusicEnthusiasts.Include(m => m.Genre).Include(m => m.IdentityUser);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace BuildABandHub.Controllers
                 return NotFound();
             }
 
-            var musicEnthusiast = await _context.MusicEnthusiast
+            var musicEnthusiast = await _context.MusicEnthusiasts
                 .Include(m => m.Genre)
                 .Include(m => m.IdentityUser)
                 .FirstOrDefaultAsync(m => m.MusicEnthusiastId == id);
@@ -80,7 +80,7 @@ namespace BuildABandHub.Controllers
                 return NotFound();
             }
 
-            var musicEnthusiast = await _context.MusicEnthusiast.FindAsync(id);
+            var musicEnthusiast = await _context.MusicEnthusiasts.FindAsync(id);
             if (musicEnthusiast == null)
             {
                 return NotFound();
@@ -135,7 +135,7 @@ namespace BuildABandHub.Controllers
                 return NotFound();
             }
 
-            var musicEnthusiast = await _context.MusicEnthusiast
+            var musicEnthusiast = await _context.MusicEnthusiasts
                 .Include(m => m.Genre)
                 .Include(m => m.IdentityUser)
                 .FirstOrDefaultAsync(m => m.MusicEnthusiastId == id);
@@ -152,15 +152,15 @@ namespace BuildABandHub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var musicEnthusiast = await _context.MusicEnthusiast.FindAsync(id);
-            _context.MusicEnthusiast.Remove(musicEnthusiast);
+            var musicEnthusiast = await _context.MusicEnthusiasts.FindAsync(id);
+            _context.MusicEnthusiasts.Remove(musicEnthusiast);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MusicEnthusiastExists(int id)
         {
-            return _context.MusicEnthusiast.Any(e => e.MusicEnthusiastId == id);
+            return _context.MusicEnthusiasts.Any(e => e.MusicEnthusiastId == id);
         }
     }
 }

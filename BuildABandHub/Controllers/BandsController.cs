@@ -22,7 +22,7 @@ namespace BuildABandHub.Controllers
         // GET: Bands
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Band.Include(b => b.Genre).Include(b => b.IdentityUser).Include(b => b.Instrument);
+            var applicationDbContext = _context.Bands.Include(b => b.Genre).Include(b => b.IdentityUser).Include(b => b.Instrument);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace BuildABandHub.Controllers
                 return NotFound();
             }
 
-            var band = await _context.Band
+            var band = await _context.Bands
                 .Include(b => b.Genre)
                 .Include(b => b.IdentityUser)
                 .Include(b => b.Instrument)
@@ -83,7 +83,7 @@ namespace BuildABandHub.Controllers
                 return NotFound();
             }
 
-            var band = await _context.Band.FindAsync(id);
+            var band = await _context.Bands.FindAsync(id);
             if (band == null)
             {
                 return NotFound();
@@ -140,7 +140,7 @@ namespace BuildABandHub.Controllers
                 return NotFound();
             }
 
-            var band = await _context.Band
+            var band = await _context.Bands
                 .Include(b => b.Genre)
                 .Include(b => b.IdentityUser)
                 .Include(b => b.Instrument)
@@ -158,15 +158,15 @@ namespace BuildABandHub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var band = await _context.Band.FindAsync(id);
-            _context.Band.Remove(band);
+            var band = await _context.Bands.FindAsync(id);
+            _context.Bands.Remove(band);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool BandExists(int id)
         {
-            return _context.Band.Any(e => e.BandId == id);
+            return _context.Bands.Any(e => e.BandId == id);
         }
     }
 }
