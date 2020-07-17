@@ -1,0 +1,120 @@
+﻿@model IEnumerable<BuildABandHub.Models.Band>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BandName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.YearsTogether)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BandMembers)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Zip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PracticesPerWeek)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GigsPlayed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GigsPerWeek)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Equipment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Instrument)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdentityUser)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BandName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.YearsTogether)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BandMembers)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Zip)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PracticesPerWeek)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GigsPlayed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GigsPerWeek)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Equipment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImagePath)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre.GenreId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Instrument.InstrumentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdentityUser.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.BandId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.BandId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.BandId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
