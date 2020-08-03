@@ -1,0 +1,47 @@
+﻿@model BuildABandHub.Models.Musician
+
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var imagePath = "~/images/" + (Model.ImagePath ?? "noimage.jpg");
+    var videoId = Model.VideoUrl.Split("v=")[1];
+    var ampPos = videoId.IndexOf('&');
+    if (ampPos != -1)
+    {
+        videoId = videoId.Substring(0, ampPos);
+    }
+}
+
+<div>
+    <div class="row justify-content-center m-3">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-title">
+                    <h1 class="text-center">@Model.Username</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body text-center">
+        <img class="card-img-top imageProfile" src="@imagePath" asp-append-version="true" />
+
+        <h4>First Name: @Model.FirstName</h4>
+        <h4>DOB: @Model.DOB.ToShortDateString()</h4>
+        <h4>Gender: @Model.Gender</h4>
+        <h4>City: @Model.Address.City</h4>
+        <h4>State: @Model.Address.State</h4>
+        <h4>Practice Per Week: @Model.PracticePerWeek</h4>
+        <h4>Gigs Played: @Model.GigsPlayed</h4>
+        <h4>Ideal Gigs Per Week: @Model.GigsPerWeek</h4>
+        <h4>Bio: @Model.Bio</h4>
+        <h4>Influences: @Model.Influences</h4>
+        <h4>Equipment: @Model.Equipment</h4>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/@videoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+    </div>
+
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.MusicianId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -22,7 +22,7 @@ namespace BuildABandHub.Controllers
         // GET: Bands
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Bands.Include(b => b.Genre).Include(b => b.IdentityUser).Include(b => b.Instrument);
+            var applicationDbContext = _context.Bands.Include(b => b.Address);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,9 +35,7 @@ namespace BuildABandHub.Controllers
             }
 
             var band = await _context.Bands
-                .Include(b => b.Genre)
-                .Include(b => b.IdentityUser)
-                .Include(b => b.Instrument)
+                .Include(b => b.Address)
                 .FirstOrDefaultAsync(m => m.BandId == id);
             if (band == null)
             {
@@ -50,9 +48,7 @@ namespace BuildABandHub.Controllers
         // GET: Bands/Create
         public IActionResult Create()
         {
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId");
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["InstrumentId"] = new SelectList(_context.Set<Instrument>(), "InstrumentId", "InstrumentId");
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId");
             return View();
         }
 
@@ -61,7 +57,7 @@ namespace BuildABandHub.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BandId,BandName,YearsTogether,BandMembers,City,State,Zip,Email,PracticesPerWeek,GigsPlayed,GigsPerWeek,Equipment,ImagePath,GenreId,InstrumentId,IdentityUserId")] Band band)
+        public async Task<IActionResult> Create([Bind("BandId,BandName,YearsTogether,AddressId,Email,CommitmentLevel,PracticesPerWeek,GigsPlayed,GigsPerWeek,ImagePath")] Band band)
         {
             if (ModelState.IsValid)
             {
@@ -69,9 +65,7 @@ namespace BuildABandHub.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", band.GenreId);
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", band.IdentityUserId);
-            ViewData["InstrumentId"] = new SelectList(_context.Set<Instrument>(), "InstrumentId", "InstrumentId", band.InstrumentId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", band.AddressId);
             return View(band);
         }
 
@@ -88,9 +82,7 @@ namespace BuildABandHub.Controllers
             {
                 return NotFound();
             }
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", band.GenreId);
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", band.IdentityUserId);
-            ViewData["InstrumentId"] = new SelectList(_context.Set<Instrument>(), "InstrumentId", "InstrumentId", band.InstrumentId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", band.AddressId);
             return View(band);
         }
 
@@ -99,7 +91,7 @@ namespace BuildABandHub.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BandId,BandName,YearsTogether,BandMembers,City,State,Zip,Email,PracticesPerWeek,GigsPlayed,GigsPerWeek,Equipment,ImagePath,GenreId,InstrumentId,IdentityUserId")] Band band)
+        public async Task<IActionResult> Edit(int id, [Bind("BandId,BandName,YearsTogether,AddressId,Email,CommitmentLevel,PracticesPerWeek,GigsPlayed,GigsPerWeek,ImagePath")] Band band)
         {
             if (id != band.BandId)
             {
@@ -126,9 +118,7 @@ namespace BuildABandHub.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", band.GenreId);
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", band.IdentityUserId);
-            ViewData["InstrumentId"] = new SelectList(_context.Set<Instrument>(), "InstrumentId", "InstrumentId", band.InstrumentId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", band.AddressId);
             return View(band);
         }
 
@@ -141,9 +131,7 @@ namespace BuildABandHub.Controllers
             }
 
             var band = await _context.Bands
-                .Include(b => b.Genre)
-                .Include(b => b.IdentityUser)
-                .Include(b => b.Instrument)
+                .Include(b => b.Address)
                 .FirstOrDefaultAsync(m => m.BandId == id);
             if (band == null)
             {

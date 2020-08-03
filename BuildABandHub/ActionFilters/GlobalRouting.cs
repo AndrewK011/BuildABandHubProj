@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +23,16 @@ namespace BuildABandHub.ActionFilters
             {
                 if (_claimsPrincipal.IsInRole("Musician")) 
                 {
-                    //context.Result = new RedirectToActionResult("Index", "Musicians", null);
+                    context.Result = new RedirectToActionResult("Index", "Musicians", null);
                 }
                 else if (_claimsPrincipal.IsInRole("Band"))
                 {   
-                    //context.Result = new RedirectToActionResult("Index", "Bands", null); 
-                } 
+                    context.Result = new RedirectToActionResult("Index", "Bands", null); 
+                }
+                else if (_claimsPrincipal.IsInRole("MusicEnthusiast"))
+                {
+                    context.Result = new RedirectToActionResult("Index", "MusicEnthusiasts", null);
+                }
             }
         }
 

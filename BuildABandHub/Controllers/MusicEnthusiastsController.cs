@@ -22,7 +22,7 @@ namespace BuildABandHub.Controllers
         // GET: MusicEnthusiasts
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.MusicEnthusiasts.Include(m => m.Genre).Include(m => m.IdentityUser);
+            var applicationDbContext = _context.MusicEnthusiasts.Include(m => m.Address).Include(m => m.IdentityUser);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace BuildABandHub.Controllers
             }
 
             var musicEnthusiast = await _context.MusicEnthusiasts
-                .Include(m => m.Genre)
+                .Include(m => m.Address)
                 .Include(m => m.IdentityUser)
                 .FirstOrDefaultAsync(m => m.MusicEnthusiastId == id);
             if (musicEnthusiast == null)
@@ -49,7 +49,7 @@ namespace BuildABandHub.Controllers
         // GET: MusicEnthusiasts/Create
         public IActionResult Create()
         {
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId");
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId");
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -59,7 +59,7 @@ namespace BuildABandHub.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MusicEnthusiastId,UserName,FirstName,City,State,Zip,GenreId,IdentityUserId")] MusicEnthusiast musicEnthusiast)
+        public async Task<IActionResult> Create([Bind("MusicEnthusiastId,Username,FirstName,AddressId,IdentityUserId")] MusicEnthusiast musicEnthusiast)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +67,7 @@ namespace BuildABandHub.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", musicEnthusiast.GenreId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", musicEnthusiast.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", musicEnthusiast.IdentityUserId);
             return View(musicEnthusiast);
         }
@@ -85,7 +85,7 @@ namespace BuildABandHub.Controllers
             {
                 return NotFound();
             }
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", musicEnthusiast.GenreId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", musicEnthusiast.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", musicEnthusiast.IdentityUserId);
             return View(musicEnthusiast);
         }
@@ -95,7 +95,7 @@ namespace BuildABandHub.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MusicEnthusiastId,UserName,FirstName,City,State,Zip,GenreId,IdentityUserId")] MusicEnthusiast musicEnthusiast)
+        public async Task<IActionResult> Edit(int id, [Bind("MusicEnthusiastId,Username,FirstName,AddressId,IdentityUserId")] MusicEnthusiast musicEnthusiast)
         {
             if (id != musicEnthusiast.MusicEnthusiastId)
             {
@@ -122,7 +122,7 @@ namespace BuildABandHub.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", musicEnthusiast.GenreId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", musicEnthusiast.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", musicEnthusiast.IdentityUserId);
             return View(musicEnthusiast);
         }
@@ -136,7 +136,7 @@ namespace BuildABandHub.Controllers
             }
 
             var musicEnthusiast = await _context.MusicEnthusiasts
-                .Include(m => m.Genre)
+                .Include(m => m.Address)
                 .Include(m => m.IdentityUser)
                 .FirstOrDefaultAsync(m => m.MusicEnthusiastId == id);
             if (musicEnthusiast == null)

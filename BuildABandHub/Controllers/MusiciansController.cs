@@ -7,23 +7,48 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BuildABandHub.Data;
 using BuildABandHub.Models;
+using BuildABandHub.ViewModels;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Security.Claims;
 
 namespace BuildABandHub.Controllers
 {
     public class MusiciansController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public MusiciansController(ApplicationDbContext context)
+        public MusiciansController(ApplicationDbContext context,
+                                    IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Musicians
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Musicians.Include(m => m.Genre).Include(m => m.IdentityUser).Include(m => m.Instrument);
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return RedirectToAction("NewUser");
+            }
+            var musician = _context.Musicians
+                .Include(m => m.Address)
+                .Include(m => m.IdentityUser)
+                .FirstOrDefault(m => m.IdentityUserId == userId);
+            if (musician == null)
+            {
+                return RedirectToAction("Create");
+            }
+            var applicationDbContext = _context.Musicians.Include(m => m.Address).Include(m => m.IdentityUser);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        public IActionResult NewUser()
+        {
+            return View();
         }
 
         // GET: Musicians/Details/5
@@ -35,9 +60,34 @@ namespace BuildABandHub.Controllers
             }
 
             var musician = await _context.Musicians
-                .Include(m => m.Genre)
+                .Include(m => m.Address)
                 .Include(m => m.IdentityUser)
-                .Include(m => m.Instrument)
+                .FirstOrDefaultAsync(m => m.MusicianId == id);
+
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (musician == null)
+            {
+                return NotFound();
+            }
+            else if(musician.IdentityUserId == userId)
+            {
+                return RedirectToAction("Profile", new { id });
+            }
+
+            return View(musician);
+        }
+
+        public async Task<IActionResult> Profile(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var musician = await _context.Musicians
+                .Include(m => m.Address)
+                .Include(m => m.IdentityUser)
                 .FirstOrDefaultAsync(m => m.MusicianId == id);
             if (musician == null)
             {
@@ -50,9 +100,8 @@ namespace BuildABandHub.Controllers
         // GET: Musicians/Create
         public IActionResult Create()
         {
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId");
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId");
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["InstrumentId"] = new SelectList(_context.Set<Instrument>(), "InstrumentId", "InstrumentId");
             return View();
         }
 
@@ -61,17 +110,44 @@ namespace BuildABandHub.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MusicianId,Username,FirstName,DOB,Gender,YearsTogether,BandMembers,City,State,Zip,Email,PracticePerWeek,GigsPlayed,GigsPerWeek,Equipment,ImagePath,GenreId,InstrumentId,IdentityUserId")] Musician musician)
+        public async Task<IActionResult> Create(MusicianCreateViewModel musician)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(musician);
+                string uniqueFileName = null;
+                if(musician.Image != null)
+                {
+                    string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + musician.Image.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    musician.Image.CopyTo(new FileStream(filePath, FileMode.Create));
+                }
+                Musician newMusician = new Musician
+                {
+                    Username = musician.Username,
+                    FirstName = musician.FirstName,
+                    DOB = musician.DOB,
+                    Gender = musician.Gender,
+                    Email = musician.Email,
+                    Influences = musician.Influences,
+                    Equipment = musician.Equipment,
+                    GigsPerWeek = musician.GigsPerWeek,
+                    GigsPlayed = musician.GigsPlayed,
+                    PracticePerWeek = musician.PracticePerWeek,
+                    Bio = musician.Bio,
+                    Address = musician.Address,
+                    ImagePath = uniqueFileName,
+                    VideoUrl = musician.VideoUrl
+                    
+                };
+                newMusician.IdentityUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _context.Add(newMusician);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = newMusician.MusicianId});
             }
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", musician.GenreId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", musician.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", musician.IdentityUserId);
-            ViewData["InstrumentId"] = new SelectList(_context.Set<Instrument>(), "InstrumentId", "InstrumentId", musician.InstrumentId);
+            ViewBag.MusicianGenreId = new SelectList(_context.MusicianGenres, "MusicianGenreId", "TypeOfGenre");
             return View(musician);
         }
 
@@ -88,9 +164,8 @@ namespace BuildABandHub.Controllers
             {
                 return NotFound();
             }
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", musician.GenreId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", musician.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", musician.IdentityUserId);
-            ViewData["InstrumentId"] = new SelectList(_context.Set<Instrument>(), "InstrumentId", "InstrumentId", musician.InstrumentId);
             return View(musician);
         }
 
@@ -99,7 +174,7 @@ namespace BuildABandHub.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MusicianId,Username,FirstName,DOB,Gender,YearsTogether,BandMembers,City,State,Zip,Email,PracticePerWeek,GigsPlayed,GigsPerWeek,Equipment,ImagePath,GenreId,InstrumentId,IdentityUserId")] Musician musician)
+        public async Task<IActionResult> Edit(int id, Musician musician)
         {
             if (id != musician.MusicianId)
             {
@@ -126,9 +201,8 @@ namespace BuildABandHub.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", musician.GenreId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", musician.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", musician.IdentityUserId);
-            ViewData["InstrumentId"] = new SelectList(_context.Set<Instrument>(), "InstrumentId", "InstrumentId", musician.InstrumentId);
             return View(musician);
         }
 
@@ -141,9 +215,8 @@ namespace BuildABandHub.Controllers
             }
 
             var musician = await _context.Musicians
-                .Include(m => m.Genre)
+                .Include(m => m.Address)
                 .Include(m => m.IdentityUser)
-                .Include(m => m.Instrument)
                 .FirstOrDefaultAsync(m => m.MusicianId == id);
             if (musician == null)
             {

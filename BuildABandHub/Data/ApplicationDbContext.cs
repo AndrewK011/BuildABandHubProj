@@ -20,15 +20,30 @@ namespace BuildABandHub.Data
 
             builder.Entity<IdentityRole>()
                 .HasData(
-                new IdentityRole 
+                new IdentityRole
                 {
-                    Name = "Admin",
-                    NormalizedName = "ADMIN" 
+                    Name = "Musician",
+                    NormalizedName = "MUSICIAN"
+                    
+                },
+                new IdentityRole
+                {
+                    Name = "Music Enthusiast",
+                    NormalizedName = "MUSIC ENTHUSIAST"
                 }
             );
         }
-        public DbSet<BuildABandHub.Models.Musician> Musicians { get; set; }
-        public DbSet<BuildABandHub.Models.Band> Bands { get; set; }
-        public DbSet<BuildABandHub.Models.MusicEnthusiast> MusicEnthusiasts { get; set; }
+        public DbSet<Musician> Musicians { get; set; }
+        public DbSet<MusicEnthusiast> MusicEnthusiasts { get; set; }
+        public DbSet<Band> Bands { get; set; }
+        public DbSet<BandMusician> BandMusicians { get; set; }
+        public DbSet<MusicianGenre> MusicianGenres { get; set; }
+        public DbSet<MusicEnthusiastGenre> MusicEnthusiastGenres { get; set; }
+        public DbSet<BandGenre> BandGenres { get; set; }
+        public DbSet<MusicianInstrument> MusicianInstruments { get; set; }
+        public DbSet<Instrument> Instruments { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<BuildABandHub.Models.Concert> Concert { get; set; }
     }
 }

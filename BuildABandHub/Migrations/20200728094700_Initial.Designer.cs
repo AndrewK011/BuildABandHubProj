@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BuildABandHub.Data.Migrations
+namespace BuildABandHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200717200859_AddedDbSetAgain")]
-    partial class AddedDbSetAgain
+    [Migration("20200728094700_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,6 +21,27 @@ namespace BuildABandHub.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("BuildABandHub.Models.Address", b =>
+                {
+                    b.Property<int>("AddressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Zip")
+                        .HasColumnType("int");
+
+                    b.HasKey("AddressId");
+
+                    b.ToTable("Addresses");
+                });
+
             modelBuilder.Entity("BuildABandHub.Models.Band", b =>
                 {
                     b.Property<int>("BandId")
@@ -28,23 +49,15 @@ namespace BuildABandHub.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BandMembers")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
 
                     b.Property<string>("BandName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Equipment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
 
                     b.Property<int>("GigsPerWeek")
                         .HasColumnType("int");
@@ -52,36 +65,68 @@ namespace BuildABandHub.Data.Migrations
                     b.Property<int>("GigsPlayed")
                         .HasColumnType("int");
 
-                    b.Property<string>("IdentityUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InstrumentId")
-                        .HasColumnType("int");
 
                     b.Property<int>("PracticesPerWeek")
                         .HasColumnType("int");
 
-                    b.Property<string>("State")
+                    b.Property<string>("VideoUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("YearsTogether")
                         .HasColumnType("int");
 
-                    b.Property<int>("Zip")
-                        .HasColumnType("int");
-
                     b.HasKey("BandId");
 
-                    b.HasIndex("GenreId");
-
-                    b.HasIndex("IdentityUserId");
-
-                    b.HasIndex("InstrumentId");
+                    b.HasIndex("AddressId");
 
                     b.ToTable("Bands");
+                });
+
+            modelBuilder.Entity("BuildABandHub.Models.BandGenre", b =>
+                {
+                    b.Property<int>("BandGenreId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BandGenreId");
+
+                    b.ToTable("BandGenres");
+                });
+
+            modelBuilder.Entity("BuildABandHub.Models.BandMusician", b =>
+                {
+                    b.Property<int>("BandMusicianId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("BandId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAuthorized")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("JoinDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MusicianId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BandMusicianId");
+
+                    b.ToTable("BandMusicians");
                 });
 
             modelBuilder.Entity("BuildABandHub.Models.Genre", b =>
@@ -91,48 +136,12 @@ namespace BuildABandHub.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Blues")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("ClassicRock")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Classical")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Electronic")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Funk")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HipHopRap")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Jazz")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Metal")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Other")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Pop")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Progressive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Punk")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Rock")
-                        .HasColumnType("bit");
+                    b.Property<string>("TypeOfGenre")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("GenreId");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("BuildABandHub.Models.Instrument", b =>
@@ -142,33 +151,12 @@ namespace BuildABandHub.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Drums")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Guitar")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HurdyGurdy")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Other")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Piano")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Saxophone")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Violin")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Vocals")
-                        .HasColumnType("bit");
+                    b.Property<string>("TypeOfInstrument")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("InstrumentId");
 
-                    b.ToTable("Instrument");
+                    b.ToTable("Instruments");
                 });
 
             modelBuilder.Entity("BuildABandHub.Models.MusicEnthusiast", b =>
@@ -178,34 +166,43 @@ namespace BuildABandHub.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("State")
+                    b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Zip")
-                        .HasColumnType("int");
 
                     b.HasKey("MusicEnthusiastId");
 
-                    b.HasIndex("GenreId");
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("IdentityUserId");
 
                     b.ToTable("MusicEnthusiasts");
+                });
+
+            modelBuilder.Entity("BuildABandHub.Models.MusicEnthusiastGenre", b =>
+                {
+                    b.Property<int>("MusicEnthusiastGenreId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MusicEnthusiastId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MusicEnthusiastGenreId");
+
+                    b.ToTable("MusicEnthusiastGenres");
                 });
 
             modelBuilder.Entity("BuildABandHub.Models.Musician", b =>
@@ -215,10 +212,10 @@ namespace BuildABandHub.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BandMembers")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("City")
+                    b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DOB")
@@ -236,9 +233,6 @@ namespace BuildABandHub.Data.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
                     b.Property<int>("GigsPerWeek")
                         .HasColumnType("int");
 
@@ -251,35 +245,63 @@ namespace BuildABandHub.Data.Migrations
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("InstrumentId")
-                        .HasColumnType("int");
+                    b.Property<string>("Influences")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PracticePerWeek")
                         .HasColumnType("int");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(15)")
                         .HasMaxLength(15);
 
-                    b.Property<int>("YearsTogether")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Zip")
-                        .HasColumnType("int");
+                    b.Property<string>("VideoUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MusicianId");
 
-                    b.HasIndex("GenreId");
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("IdentityUserId");
 
-                    b.HasIndex("InstrumentId");
-
                     b.ToTable("Musicians");
+                });
+
+            modelBuilder.Entity("BuildABandHub.Models.MusicianGenre", b =>
+                {
+                    b.Property<int>("MusicianGenreId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MusicianId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MusicianGenreId");
+
+                    b.ToTable("MusicianGenres");
+                });
+
+            modelBuilder.Entity("BuildABandHub.Models.MusicianInstrument", b =>
+                {
+                    b.Property<int>("MusicianInstrumentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("InstrumentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MusicianId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MusicianInstrumentId");
+
+                    b.ToTable("MusicianInstruments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -311,10 +333,17 @@ namespace BuildABandHub.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2a412d3a-b301-469b-8b7c-e9dafe2b0daf",
-                            ConcurrencyStamp = "ba5c7b6c-63a4-4bde-a226-ad7a372c97d1",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
+                            Id = "3a3cbd76-fc64-41e7-810d-7f6958e55ab4",
+                            ConcurrencyStamp = "aa23177f-45c8-4e6b-a0ff-bd284359c806",
+                            Name = "Musician",
+                            NormalizedName = "MUSICIAN"
+                        },
+                        new
+                        {
+                            Id = "0438d512-012e-469f-84dc-7335437ad701",
+                            ConcurrencyStamp = "25e31b22-ebe5-4005-b3ca-50040d99a708",
+                            Name = "Music Enthusiast",
+                            NormalizedName = "MUSIC ENTHUSIAST"
                         });
                 });
 
@@ -489,28 +518,18 @@ namespace BuildABandHub.Data.Migrations
 
             modelBuilder.Entity("BuildABandHub.Models.Band", b =>
                 {
-                    b.HasOne("BuildABandHub.Models.Genre", "Genre")
+                    b.HasOne("BuildABandHub.Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
-                        .WithMany()
-                        .HasForeignKey("IdentityUserId");
-
-                    b.HasOne("BuildABandHub.Models.Instrument", "Instrument")
-                        .WithMany()
-                        .HasForeignKey("InstrumentId")
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("BuildABandHub.Models.MusicEnthusiast", b =>
                 {
-                    b.HasOne("BuildABandHub.Models.Genre", "Genre")
+                    b.HasOne("BuildABandHub.Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("GenreId")
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -521,21 +540,15 @@ namespace BuildABandHub.Data.Migrations
 
             modelBuilder.Entity("BuildABandHub.Models.Musician", b =>
                 {
-                    b.HasOne("BuildABandHub.Models.Genre", "Genre")
+                    b.HasOne("BuildABandHub.Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("GenreId")
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()
                         .HasForeignKey("IdentityUserId");
-
-                    b.HasOne("BuildABandHub.Models.Instrument", "Instrument")
-                        .WithMany()
-                        .HasForeignKey("InstrumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
