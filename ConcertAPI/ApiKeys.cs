@@ -7,6 +7,6 @@ namespace ConcertAPI
 {
     public static class ApiKeys
     {
-        public static readonly string googleApi = "AIzaSyBPmuO3vhlkG5EENdEpLGaJN6hzhMsvp_8";
+        public static readonly string googleApi = "AIzaSyBOGVOkAWneFiztT3K8SX7KMEfPhCNOwS4";
     }
 }

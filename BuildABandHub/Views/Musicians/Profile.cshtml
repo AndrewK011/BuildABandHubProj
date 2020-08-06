@@ -1,15 +1,20 @@
-﻿@model BuildABandHub.Models.Musician
+﻿@model BuildABandHub.ViewModels.MusicianDetailsViewModel
 
 @{
     ViewData["Title"] = "Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var imagePath = "~/images/" + (Model.ImagePath ?? "noimage.jpg");
-    var videoId = Model.VideoUrl.Split("v=")[1];
-    var ampPos = videoId.IndexOf('&');
-    if (ampPos != -1)
+        var videoId = "dQw4w9WgXcQ";
+    if(Model.VideoUrl != null)
     {
-        videoId = videoId.Substring(0, ampPos);
+        videoId = Model.VideoUrl.Split("v=")[1];
+        var ampPos = videoId.IndexOf('&');
+        if (ampPos != -1)
+        {
+            videoId = videoId.Substring(0, ampPos);
+        }
     }
+
 }
 
 <div>
@@ -24,6 +29,28 @@
     </div>
     <div class="card-body text-center">
         <img class="card-img-top imageProfile" src="@imagePath" asp-append-version="true" />
+        <h4>
+            Genre(s):<br /> @foreach (var item in Model.Genres)
+            {
+                @Html.DisplayFor(modelItem => item.TypeOfGenre)
+                <br />
+            }
+        </h4>
+        @*<h4>
+            Members: @foreach (var item in Model.Musicians)
+            {
+                <a asp-action="Details" asp-controller="Musicians" asp-route-id="@item.MusicianId">@Html.DisplayFor(modelItem => item.Username)</a>
+                @Html.DisplayFor(modelItem => item.FirstName)
+                <br />
+            }
+        </h4>*@
+        <h4>
+            Instruments: @foreach (var item in Model.Instruments)
+            {
+                @Html.DisplayFor(modelItem => item.TypeOfInstrument)
+                <br />
+            }
+        </h4>
 
         <h4>First Name: @Model.FirstName</h4>
         <h4>DOB: @Model.DOB.ToShortDateString()</h4>

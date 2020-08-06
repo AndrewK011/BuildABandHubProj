@@ -20,6 +20,7 @@ namespace BuildABandHub.Models
         [DisplayName("First Name")]
         public string FirstName { get; set; }
         [Required]
+        [MinumumAge(18)]
         [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
         public string Gender { get; set; }
@@ -27,7 +28,7 @@ namespace BuildABandHub.Models
         public int AddressId { get; set; }
         public Address Address { get; set; }
         public string Email { get; set; }
-        [DisplayName("Practice Per Week")]
+        [DisplayName("Practices Per Week")]
         public int PracticePerWeek { get; set; }
         [DisplayName("Gigs Played")]
         public int GigsPlayed { get; set; }
@@ -36,6 +37,7 @@ namespace BuildABandHub.Models
         public string Equipment { get; set; }
         [DisplayName("Upload A Profile Picture")]
         public string ImagePath { get; set; }
+        [DisplayName("Video URL")]
         public string VideoUrl { get; set; }
         public string Bio { get; set; }
         public string Influences { get; set; }

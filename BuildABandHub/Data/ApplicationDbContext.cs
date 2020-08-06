@@ -44,6 +44,7 @@ namespace BuildABandHub.Data
         public DbSet<Instrument> Instruments { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Genre> Genres { get; set; }
-        public DbSet<BuildABandHub.Models.Concert> Concert { get; set; }
+        public DbSet<Concert> Concert { get; set; }
+        public DbSet<NeededBandInstrument> NeededBandInstruments { get; set; }
     }
 }

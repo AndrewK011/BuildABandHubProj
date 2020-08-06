@@ -5,11 +5,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>List of Music Enthusiasts</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -20,10 +17,10 @@
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Address)
+                @Html.DisplayNameFor(model => model.Address.City)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdentityUser)
+                @Html.DisplayNameFor(model => model.Address.State)
             </th>
             <th></th>
         </tr>
@@ -38,15 +35,13 @@
                 @Html.DisplayFor(modelItem => item.FirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Address.AddressId)
+                @Html.DisplayFor(modelItem => item.Address.City)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdentityUser.Id)
+                @Html.DisplayFor(modelItem => item.Address.State)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.MusicEnthusiastId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MusicEnthusiastId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MusicEnthusiastId">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.MusicEnthusiastId">Details</a>
             </td>
         </tr>
 }

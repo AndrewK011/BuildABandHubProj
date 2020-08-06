@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using BuildABandHub.ActionFilters;
+using SignalRChat.Hubs;
 
 namespace BuildABandHub
 {
@@ -45,7 +46,7 @@ namespace BuildABandHub
             });
             services.AddControllersWithViews();
             services.AddRazorPages();
-            //services.AddSignalR();
+            services.AddSignalR();
             //services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
         }
 
@@ -77,6 +78,7 @@ namespace BuildABandHub
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chathub");
             });
         }
     }

@@ -1,0 +1,66 @@
+﻿@model BuildABandHub.ViewModels.BandDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var imagePath = "~/images/" + (Model.ImagePath ?? "noimage.jpg");
+    var videoId = Model.VideoUrl.Split("v=")[1];
+    var ampPos = videoId.IndexOf('&');
+    if (ampPos != -1)
+    {
+        videoId = videoId.Substring(0, ampPos);
+    }
+}
+
+<div>
+    <div class="row justify-content-center m-3">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-title">
+                    <h1 class="text-center">@Model.BandName</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body text-center">
+        <img class="card-img-top imageProfile" src="@imagePath" asp-append-version="true" />
+
+        <h4>
+            Genre(s):<br /> @foreach (var item in Model.Genres)
+            {
+                @Html.DisplayFor(modelItem => item.TypeOfGenre)
+                <br />
+            }
+        </h4>
+        <h4>
+            Members: @foreach (var item in Model.Musicians)
+            {
+                <a asp-action="Details" asp-controller="Musicians" asp-route-id="@item.MusicianId">@Html.DisplayFor(modelItem => item.Username)</a>
+                @Html.DisplayFor(modelItem => item.FirstName)
+                <br />
+            }
+        </h4>
+        <h4>
+            Instruments Wanted: @foreach (var item in Model.InstrumentsWanted)
+            {
+                @Html.DisplayFor(modelItem => item.TypeOfInstrument)
+                <br />
+            }
+        </h4>
+        <h4>Years Together: @Model.YearsTogether</h4>
+        <h4>City: @Model.Address.City</h4>
+        <h4>State: @Model.Address.State</h4>
+        <h4>Practice Per Week: @Model.PracticesPerWeek</h4>
+        <h4>Gigs Played: @Model.GigsPlayed</h4>
+        <h4>Ideal Gigs Per Week: @Model.GigsPerWeek</h4>
+        <h4>Email: @Model.Email</h4>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/@videoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+    </div>
+
+</div>
+<div>
+    <a asp-action="Index">Back to List</a> |
+    <a asp-action="Edit">Edit</a> |
+    <a asp-action="AddMembers" asp-route-id="@Model.BandId">Add Members</a>
+</div>

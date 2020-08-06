@@ -1,67 +1,64 @@
-﻿@model BuildABandHub.Models.Band
+﻿@model BuildABandHub.ViewModels.BandDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var imagePath = "~/images/" + (Model.ImagePath ?? "noimage.jpg");
+    var videoId = Model.VideoUrl.Split("v=")[1];
+    var ampPos = videoId.IndexOf('&');
+    if (ampPos != -1)
+    {
+        videoId = videoId.Substring(0, ampPos);
+    }
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>Band</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BandName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BandName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.YearsTogether)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.YearsTogether)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address.AddressId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PracticesPerWeek)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PracticesPerWeek)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GigsPlayed)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GigsPlayed)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GigsPerWeek)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GigsPerWeek)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImagePath)
-        </dd>
-    </dl>
+    <div class="row justify-content-center m-3">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-title">
+                    <h1 class="text-center">@Model.BandName</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body text-center">
+        <img class="card-img-top imageProfile" src="@imagePath" asp-append-version="true" />
+
+        <h4>
+            Genre(s):<br /> @foreach (var item in Model.Genres)
+            {
+                @Html.DisplayFor(modelItem => item.TypeOfGenre)
+                <br />
+            }
+        </h4>
+        <h4>
+            Members: @foreach (var item in Model.Musicians)
+            {
+                <a asp-action="Details" asp-controller="Musicians" asp-route-id="@item.MusicianId">@Html.DisplayFor(modelItem => item.Username)</a>
+                @Html.DisplayFor(modelItem => item.FirstName)
+                <br />
+            }
+        </h4>
+        <h4>
+            Instruments Wanted: @foreach (var item in Model.InstrumentsWanted)
+            {
+                @Html.DisplayFor(modelItem => item.TypeOfInstrument)
+                <br />
+            }
+        </h4>
+        <h4>Years Together: @Model.YearsTogether</h4>
+        <h4>City: @Model.Address.City</h4>
+        <h4>State: @Model.Address.State</h4>
+        <h4>Practice Per Week: @Model.PracticesPerWeek</h4>
+        <h4>Gigs Played: @Model.GigsPlayed</h4>
+        <h4>Ideal Gigs Per Week: @Model.GigsPerWeek</h4>
+        <h4>Email: @Model.Email</h4>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/@videoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+    </div>
+
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.BandId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BuildABandHub.Data;
 using BuildABandHub.Models;
+using BuildABandHub.ViewModels;
+using System.IO;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BuildABandHub.Controllers
 {
     public class MusicEnthusiastsController : Controller
     {
         private readonly ApplicationDbContext _context;
+
 
         public MusicEnthusiastsController(ApplicationDbContext context)
         {
@@ -22,6 +27,18 @@ namespace BuildABandHub.Controllers
         // GET: MusicEnthusiasts
         public async Task<IActionResult> Index()
         {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return View();
+            }
+            var musicEnthusiast = _context.MusicEnthusiasts
+                .Include(m => m.Address)
+                .FirstOrDefault(m => m.IdentityUserId == userId);
+            if (musicEnthusiast == null)
+            {
+                return RedirectToAction("Create");
+            }
             var applicationDbContext = _context.MusicEnthusiasts.Include(m => m.Address).Include(m => m.IdentityUser);
             return View(await applicationDbContext.ToListAsync());
         }
@@ -49,9 +66,16 @@ namespace BuildABandHub.Controllers
         // GET: MusicEnthusiasts/Create
         public IActionResult Create()
         {
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId");
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
+            var genre = _context.Genres.Select(g => new SelectListItem()
+            {
+                Text = g.TypeOfGenre,
+                Value = g.GenreId.ToString()
+            }).ToList();
+            var vm = new MusicEnthusiastCreateViewModel()
+            {
+                Genre = genre
+            };
+            return View(vm);
         }
 
         // POST: MusicEnthusiasts/Create
@@ -59,16 +83,32 @@ namespace BuildABandHub.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MusicEnthusiastId,Username,FirstName,AddressId,IdentityUserId")] MusicEnthusiast musicEnthusiast)
+        public async Task<IActionResult> Create(MusicEnthusiastCreateViewModel musicEnthusiast)
         {
+            MusicEnthusiastGenre musicEnthusiastGenre = new MusicEnthusiastGenre();
+
             if (ModelState.IsValid)
             {
-                _context.Add(musicEnthusiast);
+                MusicEnthusiast newMusicEnthusiast = new MusicEnthusiast
+                {
+                    Username = musicEnthusiast.Username,
+                    FirstName = musicEnthusiast.FirstName,
+                    Address = musicEnthusiast.Address
+                };
+                newMusicEnthusiast.IdentityUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _context.Add(newMusicEnthusiast);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var genreIds = musicEnthusiast.Genre.Where(g => g.Selected)
+                                             .Select(v => v.Value);
+                foreach (var id in genreIds)
+                {
+                    musicEnthusiastGenre.GenreId = int.Parse(id);
+                    musicEnthusiastGenre.MusicEnthusiastId = newMusicEnthusiast.MusicEnthusiastId;
+                    _context.Add(musicEnthusiastGenre);
+                }
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", new { id = newMusicEnthusiast.MusicEnthusiastId });
             }
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", musicEnthusiast.AddressId);
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", musicEnthusiast.IdentityUserId);
             return View(musicEnthusiast);
         }
 

@@ -5,28 +5,23 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>List Of Bands</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create a Band?</a>
 </p>
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.BandName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.YearsTogether)
+                @Html.DisplayNameFor(model => model.Address.City)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PracticesPerWeek)
+                @Html.DisplayNameFor(model => model.Address.State)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.GigsPlayed)
@@ -34,29 +29,25 @@
             <th>
                 @Html.DisplayNameFor(model => model.GigsPerWeek)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
+                var imagePath = "~/images/" + (item.ImagePath ?? "noimage.jpg");
         <tr>
+            <td>
+                <img class="imageThumbnail" src="@imagePath" asp-append-version="true" />
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.BandName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.YearsTogether)
+                @Html.DisplayFor(modelItem => item.Address.City)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Address.AddressId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PracticesPerWeek)
+                @Html.DisplayFor(modelItem => item.Address.State)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.GigsPlayed)
@@ -65,14 +56,9 @@
                 @Html.DisplayFor(modelItem => item.GigsPerWeek)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BandId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BandId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BandId">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.BandId">Details</a>
             </td>
         </tr>
-}
-    </tbody>
+            }
+        </tbody>
 </table>

@@ -46,6 +46,43 @@ namespace BuildABandHub.Controllers
             }
                 return View(Concerts);
         }
+        [HttpPost]
+        public async Task<IActionResult> LocalShows(string id)
+        {
+            try
+            {
+                id.Trim();
+                if (id.Contains(" "))
+                {
+                   id = id.Replace(" ", "/");
+
+                }
+                else if (id.Contains(","))
+                {
+                    id = id.Replace(",", "/");
+                }
+
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(Baseurl);
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpResponseMessage responseMessage = await client.GetAsync("api/concert/" + id);
+                    if (responseMessage.IsSuccessStatusCode)
+                    {
+                        var ApiResponse = responseMessage.Content.ReadAsStringAsync().Result;
+
+                        Concerts = JsonConvert.DeserializeObject<List<Concert>>(ApiResponse);
+                    }
+                }
+                return View(Concerts);
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
         public async Task<IActionResult> Details(int? id)
         {

@@ -1,6 +1,7 @@
 ﻿using BuildABandHub.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,7 @@ namespace BuildABandHub.ViewModels
         [StringLength(15, MinimumLength = 5)]
         public string Username { get; set; }
         [DisplayName("First Name")]
+        [Required]
         public string FirstName { get; set; }
         [Required]
         [DataType(DataType.Date)]
@@ -26,26 +28,27 @@ namespace BuildABandHub.ViewModels
         [ForeignKey("Address")]
         public int AddressId { get; set; }
         public Address Address { get; set; }
+        [EmailAddress]
         public string Email { get; set; }
         [DisplayName("Practice Per Week")]
         public int PracticePerWeek { get; set; }
         [DisplayName("Gigs Played")]
+        [Range(0,10000)]
         public int GigsPlayed { get; set; }
         [DisplayName("Max Gigs Per Week")]
         public int GigsPerWeek { get; set; }
         public string Equipment { get; set; }
         [DisplayName("Upload A Profile Picture")]
         public IFormFile Image { get; set; }
+        [Url]
         public string VideoUrl { get; set; }
         public string Bio { get; set; }
         public string Influences { get; set; }
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }
         public IdentityUser IdentityUser { get; set; }
-        [DisplayName("Genre")]
-        [ForeignKey("MusicianGenre")]
-        public int MusicianGenreId { get; set; }
-        public MusicianGenre MusicianGenre { get; set; }
-        public MusicianGenre MusicianInstrument { get; set; }
+        [Required]
+        public IList<SelectListItem> Genre { get; set; }
+        public IList<SelectListItem> Instrument { get; set; }
     }
 }

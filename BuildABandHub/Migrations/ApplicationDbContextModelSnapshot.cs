@@ -127,6 +127,42 @@ namespace BuildABandHub.Migrations
                     b.ToTable("BandMusicians");
                 });
 
+            modelBuilder.Entity("BuildABandHub.Models.Concert", b =>
+                {
+                    b.Property<int>("ConcertId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Artist")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Date")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Genre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Lat")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Long")
+                        .HasColumnType("float");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Venue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ConcertId");
+
+                    b.ToTable("Concert");
+                });
+
             modelBuilder.Entity("BuildABandHub.Models.Genre", b =>
                 {
                     b.Property<int>("GenreId")
@@ -302,6 +338,24 @@ namespace BuildABandHub.Migrations
                     b.ToTable("MusicianInstruments");
                 });
 
+            modelBuilder.Entity("BuildABandHub.Models.NeededBandInstrument", b =>
+                {
+                    b.Property<int>("NeededBandInstrumentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InstrumentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("NeededBandInstrumentId");
+
+                    b.ToTable("NeededBandInstruments");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -331,15 +385,15 @@ namespace BuildABandHub.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3a3cbd76-fc64-41e7-810d-7f6958e55ab4",
-                            ConcurrencyStamp = "aa23177f-45c8-4e6b-a0ff-bd284359c806",
+                            Id = "ef9365de-d02c-4e9b-b997-53d43d2f6f57",
+                            ConcurrencyStamp = "35398658-cce1-4615-94d7-529192d8d1ea",
                             Name = "Musician",
                             NormalizedName = "MUSICIAN"
                         },
                         new
                         {
-                            Id = "0438d512-012e-469f-84dc-7335437ad701",
-                            ConcurrencyStamp = "25e31b22-ebe5-4005-b3ca-50040d99a708",
+                            Id = "477c87d8-4fc5-41a2-804e-277ce0d3bfa0",
+                            ConcurrencyStamp = "141af9c7-44a5-475e-9b83-5541cc5b7f59",
                             Name = "Music Enthusiast",
                             NormalizedName = "MUSIC ENTHUSIAST"
                         });
